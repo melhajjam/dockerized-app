@@ -1,27 +1,57 @@
 const express = require('express');
-const mongoose = require('mongoose');
+// const mongoose = require('mongoose'); // 
+//like ORM for postgres
+const {Client} = require('pg');
 const redis = require('redis');
 
+//----------- server info-------------
 const PORT = 4000;
 const app = express();
+
+//----------- redis info-------------
 const REDIS_HOST = 'redis';
 const REDIS_PORT = 6379;
-//connect to redis
+
+
+//----------------------------connect to redis------------------------------
 const redisClient = redis.createClient({
 	url: `redis://${REDIS_HOST}:${REDIS_PORT}`,
 });
 redisClient.on('error', (err) => console.log('redis Client error ', err));
 redisClient.on('connect', () => console.log('redis connected secessfully'));
 redisClient.connect();
+//---------------------------------------------------------------------------
 
-// connect database
+
+//-----------------------connect to mongo database using mongoose-------------
+// const DB_USER = 'root';
+// const DB_PASSWORD = 'example';
+// const DB_PORT = 27017;
+// const DB_HOST = 'mongo';
+
+// const URI = `mongodb://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}`;
+// mongoose.connect(URI).then(() => console.log('connected to DB *_*')).catch((err) => console.log('failed to connect to DB :('));
+// //----------------------------------------------------------------------------
+
+//------------------------------connect to postgres db----------------------------
 const DB_USER = 'root';
 const DB_PASSWORD = 'example';
-const DB_PORT = 27017;
-const DB_HOST = 'mongo';
+const DB_PORT = 5432;
+const DB_HOST = 'postgres-db';
 
-const URI = `mongodb://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}`;
-mongoose.connect(URI).then(() => console.log('connected to DB *_*')).catch((err) => console.log('failed to connect to DB :('));
+const URI = `postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}`;
+const client = new Client({
+	connectionString: URI,
+  });
+client.connect().then(() => console.log('connected to postgres DB *_*'))
+				.catch((err) => console.log('failed to connect to postgres DB :(', err));
+//----------------------------------------------------------------------------
+
+
+
+
+
+
 
 
 app.get('/', (req, res) => {
