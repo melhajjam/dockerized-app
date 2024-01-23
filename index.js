@@ -3,7 +3,8 @@ const express = require('express');
 //like ORM for postgres
 const {Client} = require('pg');
 const redis = require('redis');
-
+const os = require('os');
+const path = require('path');
 //----------- server info-------------
 const PORT = 4000;
 const app = express();
@@ -48,17 +49,22 @@ client.connect().then(() => console.log('connected to postgres DB *_*'))
 //----------------------------------------------------------------------------
 
 
-
-
-
-
+app.use(express.static(path.join(__dirname)));
 
 
 app.get('/', (req, res) => {
 	redisClient.set('title','BMW');
-	res.send('<h1>Test and Test3 + test 3</h1>')
+    res.sendFile(path.join(__dirname + 'index.html'));
 });
-app.get('/data', async (req, res) => {
+
+// app.get('/', (req, res) => {
+// 	redisClient.set('title','BMW');
+// 	console.log(`traffic from : ${os.hostname}`);
+// 	res.send('<h1>Test and Test3 + test 3</h1>')
+// 	res.sendFile(path.join(__dirname +  '/index.html'));
+// });
+
+app.get('/redis', async (req, res) => {
 	const book = await redisClient.get('title');
 	res.send(`<h1>Title is : <h2>${book}</h2></h1>`);
 });

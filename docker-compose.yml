@@ -7,9 +7,9 @@ services:
                         - mongo
                         - redis
                 restart: always
-                container_name: node-app
-                ports:
-                        - "4000:4000"
+                #container_name: node-app
+                # ports:
+                #         - "4000:4000"
                 env_file:
                         - ./.env
         mongo:
